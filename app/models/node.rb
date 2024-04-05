@@ -11,8 +11,5 @@ class Node < ApplicationRecord
   # Scope to find root nodes (nodes with no parent)
   scope :roots, -> { where(parent_id: nil) }
 
-  # Returns the parent of the node using a recursive CTE query
-  #
-  # @return [Node] the root parent node
 
 end

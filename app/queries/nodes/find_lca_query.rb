@@ -45,6 +45,7 @@ class Nodes::FindLcaQuery
   def get_parents
     node_parents = get_parents_for_nodes(node_a, node_b)
     return if node_parents.empty? || node_parents.map{|node| node.id}.uniq.length > 1
+    #This area here is definitely where some performance tuning can happen when we have processed data
     @parent_a = node_parents.find { |node| node.path.split("->").first.to_i == node_a.id }
     @parent_b = node_parents.find { |node| node.path.split("->").first.to_i == node_b.id }
     @root_id = parent_a.id if parent_a == parent_b
