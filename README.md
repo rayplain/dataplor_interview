@@ -22,6 +22,7 @@ I left a few things out of the scope that would most certainly be done in a real
    1. One of the assumptions of the task was to think about how data grows and how our solution would work. I did choose a naive solution for this in the hopes that other solutions could be discussed during the interview when I could ask more questions and gather more data. This solution, being naive, would at least prevent inaccurate abstractions in a real world situation
 3. Only modest structure and organization.
 4. Some basic YARDoc style comments incase we wanted to run a yard server.
+5. Any sort of error handling at all and few guard clauses.
 
 
 ## Thoughts and Areas of interest
@@ -31,7 +32,8 @@ I prefer to call them from their models if at all possible, or at the very least
 
 most of the heavy lifting will be done in the queries folder
 
-As mentioned I chose a naive approach to the raw data thinking that I could discuss possible solutions after getting to ask questions. Sort of like a how would we improve this sort of thing that I vcould demonstrate in an interview. Because I worked on raw data that limited the amount of "railsy" ways to do certain things like has_many's and things like that.
+As mentioned I chose a naive approach to the raw data thinking that I could discuss possible solutions after getting to ask questions. Sort of like a how would we improve this sort of thing that I vcould demonstrate in an interview. Because I worked on raw data that limited the amount of "railsy" ways to do certain things like has_many's and things like that. 
+Preprossed data like maybe a ltree path field or materialized views could work but I wouwld love to discuss that in an interview after asking more questions about the nature of the data and how it grows. 
 
 ## Usage
 This is a rails 7 application in Ruby 3.2.2 so standard issue install applies.
