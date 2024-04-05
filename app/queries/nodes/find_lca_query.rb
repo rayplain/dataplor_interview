@@ -43,9 +43,18 @@ class Nodes::FindLcaQuery
   #
   # @return [void]
   def get_parents
-    @parent_a = node_a.get_parent if node_a
-    @parent_b = node_b.get_parent if node_b
+    node_parents = get_parents_for_nodes(node_a, node_b)
+    return if node_parents.empty? || node_parents.map{|node| node.id}.uniq.length > 1
+    @parent_a = node_parents.find { |node| node.path.split("->").first.to_i == node_a.id }
+    @parent_b = node_parents.find { |node| node.path.split("->").first.to_i == node_b.id }
     @root_id = parent_a.id if parent_a == parent_b
+  end
+
+  def get_parents_for_nodes(node, node_b = nil)
+    parent_cte = Arel::Table.new(:ParentHierarchy)
+    select_manager = Nodes::ParentArelQuery.new(node, node_b).call
+    select_manager.from(parent_cte).where(parent_cte[:parent_id].eq(nil))
+    Node.find_by_sql(select_manager.to_sql)
   end
 
   # Calculates the paths from the root to the two nodes
@@ -71,8 +80,7 @@ class Nodes::FindLcaQuery
       break if a != b
       lca_id = a
     end
-    @root = Node.find(lca_id) if lca_id && Node.exists?(lca_id)
-    @lowest_common_ancestor_id = root.id if root
+    @lowest_common_ancestor_id = lca_id
   end
 
   # Calculates the depth of the LCA
@@ -90,7 +98,6 @@ class Nodes::FindLcaQuery
   #
   # @return [Hash] a hash containing the LCA node, the LCA id, and the depth of the LCA
   def result
-    { root_id: root_id, lowest_common_ancestor_id: lowest_common_ancestor_id, depth: depth, root: root, node_a: node_a, node_b: node_b }
     { root_id: root_id, lowest_common_ancestor_id: lowest_common_ancestor_id, depth: depth }
   end
 end

@@ -16,16 +16,9 @@ class Node < ApplicationRecord
   # @return [Node] the root parent node
   def get_parent
     parent_cte = Arel::Table.new(:ParentHierarchy)
-    select_manager = get_parent_arel
+    select_manager = Nodes::ParentArelQuery.new(self).call
     select_manager.from(parent_cte).where(parent_cte[:parent_id].eq(nil))
     Node.find_by_sql(select_manager.to_sql).first
-  end
-
-  # Returns an Arel query to find the root parent of the node
-  #
-  # @return [Arel::SelectManager] the Arel query
-  def get_parent_arel
-    Nodes::ParentArelQuery.new(self).call
   end
 
   # Finds the lowest common ancestor (LCA) of two nodes

@@ -4,8 +4,9 @@ class Nodes::ParentArelQuery
   # Initializes a new instance of the Nodes::ParentArelQuery class
   #
   # @param node [Node] the node for which to find the root parent
-  def initialize(node)
+  def initialize(node, node_b = nil)
     @node = node
+    @node_b = node_b
   end
 
   # Builds an Arel query to find the root parent of a node
@@ -17,10 +18,10 @@ class Nodes::ParentArelQuery
 
     # Anchor member: select the node
     # @return [Arel::SelectManager] the anchor member Arel query
+    where_nodes = nodes[:id].in([@node.id, @node_b.id].compact)
     anchor_member = nodes
                       .project(nodes[:id], nodes[:parent_id], Arel::Nodes::NamedFunction.new('CAST', [nodes[:id].as('VARCHAR')]).as('path'), Arel.sql('0 AS level'))
-                      .where(nodes[:id].eq(@node.id))
-
+                      .where(where_nodes)
     # Recursive member: select the parent of the node
     # @return [Arel::SelectManager] the recursive member Arel query
     recursive_member = nodes
